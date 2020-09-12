@@ -340,3 +340,4 @@ ggplot(poly_tessellation) +
   coord_equal() + 
   theme_void() + 
   theme(legend.position='none') 
+ggsave("rhombus.png")
