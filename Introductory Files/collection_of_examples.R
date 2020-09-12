@@ -34,7 +34,7 @@ ggplot() +
 # by changing only a few things, we've significantly changed the look of the plot
 
 # We can build these up and do incredibly complex things with them, such as the example below. 
-
+# makesure you set working directory to current file location before running the code below
 # set the paths
 IMG_DIR <- "img/"
 IMG_SUBDIR <- "everything/"
