@@ -1,74 +1,59 @@
-#More small examples
+# More small examples
 # need tidyverse for all of these
-# vertiginous spiral doesn't seem to work - ask blair to check if its just me
-# vertiginous spiral
-df <- data.frame(x=0, y=0)
-for (i in 2:500){
-  df[i,1] <- df[i-1,1]+((0.98)^i)*cos(i)
-  df[i,2] <- df[i-1,2]+((0.98)^i)*sin(i)
-}
-ggplot(df, aes(x,y)) +
-  geom_polygon()+
-  theme_void()
 
-# vertiginous spiral
-numcoords <- 10 # number of coordinates
-numvert <- 8 # number of vertices
+#################################
+# Naive Sunflower
+#################################
 
-xmult <- 30
-ymult <- 14
+a = pi*(3-sqrt(5)) # amount of spiral overlap (try changing parameters, but notice it is cyclical)
+n = 500 # number of circles to plot
+ggplot(data.frame(r=sqrt(1:n),t=(1:n)*a), aes(x=r*cos(t),y=r*sin(t))) + # coordinates of interior circles
+  geom_point(aes(x=0,y=0), size=190, colour="violetred") + # plot large exterior circle
+  geom_point(aes(size=(n-r)), shape=21,fill="gold", colour="gray90") + # plot interior circles
+  theme_void() + theme(legend.position="none") # no background or legend
 
-ids <- as.factor(1:numcoords) 
-values <- data.frame(
-  id = ids,
-  value = seq(1,2,1/(numcoords-1))
-) 
+#################################
+# Marine Creature
+#################################
 
-xvals <- numeric(numcoords*numvert)
-yvals <- numeric(numcoords*numvert)
-for (i in 2:(numcoords*numvert)){
-  xvals[i] <- xvals[i-1] + ((xmult)^i)*cos(i)
-  yvals[i] <- yvals[i-1] + ((ymult)^i)*sin(i)   
-}
+xylim <- 5 # grid endpoints (larger endpoints -> longer "tail" of creature)
+xyfine <- 0.05 # fineness of grid (smaller number -> increased runtime but more detailed image)
 
-coords <- data.frame(
-  id = rep(ids, each = numvert),
-  x = xvals,
-  y = yvals
-)
+grid.points <- seq(from=-xylim, to=xylim, by = xyfine) %>% expand.grid(x=., y=.) %>% # make grid within xy endpoints at desired fineness
+  mutate(sx = x^2 + pi*cos(y)^2, sy = y + pi*sin(x)) %>% # transform grid.points to overlap in squiggly shapes (try changing exponents on any terms)
+  select(-x,-y) %>% rename(x=sx, y=sy) # drop original grid coordinates
 
-datapoly <- merge(values, coords, by = c("id"))
+# plot image
+ggplot(data=grid.points, aes(x,y)) + 
+  geom_point(alpha=0.5, shape=20, size=1, aes(color=as.factor(x))) + # plot points that make creature (higher alpha -> darker points)
+  coord_fixed() + # preserve desired shape
+  theme_void() + # no axis
+  theme(legend.position  = "none", # no legend
+        axis.ticks       = element_blank(), # no axis
+        panel.grid       = element_blank(),
+        axis.title       = element_blank(),
+        axis.text        = element_blank()) +
+  scale_color_hue(l=45, c=30) # set colour scale
 
-ggplot(datapoly, aes(x = x, y = y)) +
-  geom_polygon(aes(fill = value, group = id))
+#################################
+# Summoning Cthultu
+#################################
 
+xylim <- 3 # grid endpoints (affects how far the "rays" extend)
+xyfine <- 0.01 # fineness of grid (more fine grid -> increased runtime but more detailed image)
 
-# marine creature
-seq(from=-10, to=10, by = 0.05) %>%
-  expand.grid(x=., y=.) %>%
-  ggplot(aes(x=(x^2+pi*cos(y)^2), y=(y+pi*sin(x)))) +
-  geom_point(alpha=.1, shape=20, size=1, color="black")+
-  theme_void()+coord_fixed()
+grid.points <- seq(from=-xylim, to=xylim, by = xyfine) %>% expand.grid(x=., y=.) %>% # make grid within xy endpoints at desired fineness
+  mutate(sx = x^3 - sin(y^2), sy = y^3 - cos(x^2)) %>% # transform grid.points to overlap in squiggly shapes (try changing exponents on any terms)
+  select(-x,-y) %>% rename(x=sx, y=sy) # drop original grid coordinates
 
-# summoning cthultu
-seq(-3,3,by=.01) %>%
-  expand.grid(x=., y=.) %>%
-  ggplot(aes(x=(x^3-sin(y^2)), y=(y^3-cos(x^2)))) +
-  geom_point(alpha=.1, shape=20, size=0, color="white")+
-  theme_void()+
-  coord_fixed()+
-  theme(panel.background = element_rect(fill="black"))+
-  coord_polar()
-
-#naive sunflower - needs ggplot2
-a=pi*(3-sqrt(5))
-n=500
-ggplot(data.frame(r=sqrt(1:n),t=(1:n)*a),
-       aes(x=r*cos(t),y=r*sin(t)))+
-  geom_point(aes(x=0,y=0),
-             size=190,
-             colour="violetred")+
-  geom_point(aes(size=(n-r)),
-             shape=21,fill="gold",
-             colour="gray90")+
-  theme_void()+theme(legend.position="none")
+# plot image
+ggplot(data=grid.points, aes(x,y)) + 
+  geom_point(alpha=0.1, shape=20, size=0, color='white') + # plot points that make creature (higher alpha -> brighter points)
+  coord_polar() + # new coordinate system
+  theme_void() + # no axis
+  theme(legend.position  = "none", # no legend
+        axis.ticks       = element_blank(), # no axis
+        panel.grid       = element_blank(),
+        axis.title       = element_blank(),
+        axis.text        = element_blank(),
+        panel.background = element_rect(fill="black")) # make background dark
