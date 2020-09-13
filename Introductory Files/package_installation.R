@@ -1,4 +1,5 @@
 # Installing required packages for this session
+# You should only have to install the packages once
 # note: set your working directory to the file location to make it easier to find the saved images later
 
 install.packages("ggplot2") # used for nearly every example, gold standard in R plotting
@@ -13,6 +14,7 @@ install.packages("colourlovers") # gives us nice and pretty colour pallettes to 
 # subsumes ggplot2, also adds a bunch of other packages that the examples take advantage of
 install.packages("tidyverse") 
 
+# You need to call the libraries everytime you open a new R session
 library(ggplot2)
 library(ggforce)
 library(generativeart)
