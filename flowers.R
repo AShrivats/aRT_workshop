@@ -1,11 +1,13 @@
-# Load packages
-library(tidyverse)
-library(colourlovers)
+## This can take a couple minutes to run and ultimately display the image, which is quite detailed
 
-# Choose parameters for your flower
-exp <- 5     # exponent of the function
-ind <- 0.481 # independent term of the function
-ite <- 7     # number of iterations
+# Choose parameters
+exp <- 6 # larger number -> more overlap of flowers
+ind <- 0.6 # larger number -> less connection of flowers in the centre
+ite <- 16 # larger number -> increased levels of fractal
+num.grid.points <- 100 # larger number -> finer grid but longer runtime
+
+#####
+# Don't modify below unless you want to debug
 
 # The function
 f <- function(x, y) x^exp + ind
@@ -13,13 +15,12 @@ f <- function(x, y) x^exp + ind
 # Reduce approach to iterate
 julia <- function (z, n) Reduce(f, rep(1,n), accumulate = FALSE, init = z)
 
-# This is the grid of complex: 3000x3000 between -2 and 2
-complex_grid <- outer(seq(-2, 2, length.out = 3000), 1i*seq(-2, 2, length.out = 3000),'+') %>% as.vector()
+complex_grid <- outer(seq(-2, 2, length.out = n), 1i*seq(-2, 2, length.out = n),'+') %>% as.vector()
 
 # Iteration over grid of complex
-complex_grid %>% sapply(function(z) julia(z, n=ite)) -> datos
+datos <- complex_grid %>% sapply(function(z) julia(z, n=ite))
 
-# Pick a top random palette from COLOURLovers  
+# Pick a top random palette from COLOURLovers (this will change your picture each time you rerun)
 palette <- sample(clpalettes('top'), 1)[[1]] %>% swatch %>% .[[1]] %>% unique() %>% colorRampPalette()
 
 # Build the data frame to do the plt (removing complex with INF modulus)
@@ -44,8 +45,5 @@ df %>%
   scale_colour_manual(values=palette(10)) +
   theme_void()+
   coord_fixed()+
-  theme(legend.position = "none") -> plot
-
-# Do you like the drawing? Save it!
-ggsave("choose_a_name2.png", plot, height=4, width=4, units='in', dpi=1200)
+  theme(legend.position = "none")
 
