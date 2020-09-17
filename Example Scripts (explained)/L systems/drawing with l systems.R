@@ -1,7 +1,4 @@
-library(gsubfn)
-library(stringr)
-library(dplyr)
-library(ggplot2)
+
 #https://fronkonstin.com/2017/06/26/a-shiny-app-to-draw-curves-based-on-l-systems/
 #Plant 1
 axiom="F"
@@ -102,4 +99,5 @@ ggplot() +
         axis.ticks=element_blank(),
         axis.title=element_blank(),
         axis.text=element_blank())
-ggsave("plant7.png")
+
+#ggsave("plant7.png")

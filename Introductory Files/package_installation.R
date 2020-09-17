@@ -22,6 +22,8 @@ library(tidyverse)
 library(colourlovers)
 library(flametree)
 library(ggthemes)
+library(gsubfn)
+library(stringr)
 # other useful items
 # list of R colors: http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf
 
