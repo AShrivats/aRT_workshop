@@ -8,11 +8,11 @@ install.packages("ggthemes")
 install.packages("devtools") # this package allows us to install packages from github links
 devtools::install_github("cutterkom/generativeart") # generativeart package also used in some examples
 devtools::install_github("djnavarro/flametree")
-
 install.packages("colourlovers") # gives us nice and pretty colour pallettes to use
-
 # subsumes ggplot2, also adds a bunch of other packages that the examples take advantage of
 install.packages("tidyverse") 
+install.packages("gsubfn")
+install.packages("stringr")
 
 # You need to call the libraries everytime you open a new R session
 library(ggplot2)
